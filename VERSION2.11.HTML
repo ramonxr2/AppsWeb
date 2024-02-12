@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M1.3 1182367</title>
+</head>
+<body>
+  <div id="output"></div>
+  <script>
+    class Proceso {
+      constructor(nombre, lineas) {
+        this.nombre = nombre;
+        this.lineas = lineas;
+        this.lineaActual = 0;
+      }
+
+      generarProcesos(numeroEntero) {
+        var procesos = [];
+
+        for (var i = 0; i < numeroEntero; i++) {
+          var nombreProceso = String(i + 1);
+          var lineasProceso = [];
+
+          var cantidadLineas = Math.floor(Math.random() * 10) + 1;
+
+          for (var j = 0; j < cantidadLineas; j++) {
+            var linea = lineasPredefinidas[Math.floor(Math.random() * lineasPredefinidas.length)];
+            lineasProceso.push(linea);
+          }
+
+          var nuevoProceso = new Proceso(nombreProceso, lineasProceso);
+          procesos.push(nuevoProceso);
+        }
+
+        return procesos;
+      }
+    }
+
+    var lineasPredefinidas = [
+      "a = 1 + 2;",
+      "console.log(\"1+2\");",
+      "console.log(a)",
+      "console.log(b)",
+      "console.log(c)",
+      "b = 3 + 4;",
+      "c = 5 + 6;",
+      "console.log(\"3+4\");",
+      "console.log(\"5+6\");"
+    ];
+
+    class AlgoritmoRoundRobin {
+      constructor(procesos) {
+        this.procesos = procesos;
+      }
+
+      ejecutar() {
+        var outputElement = document.getElementById('output');
+        while (this.procesos.length > 0) {
+          const procesoActual = this.procesos.shift();
+          outputElement.innerHTML += `Proceso ${procesoActual.nombre}<br>${procesoActual.lineas[procesoActual.lineaActual]}<br>`;
+          if (procesoActual.lineaActual < procesoActual.lineas.length - 1) {
+            procesoActual.lineaActual++;
+            this.procesos.push(procesoActual);
+          } else {
+            outputElement.innerHTML += `${procesoActual.nombre} ha terminado<br>`;
+          }
+        }
+
+        outputElement.innerHTML += "Todos los procesos han sido ejecutados.<br>";
+      }
+    }
+
+    // Usare este prompt para leer el nro de procesos
+    var numberOfProcesses = prompt("Ingresa el numero de procesos:");
+
+    // Validar
+    if (!isNaN(numberOfProcesses)) {
+      const procs = new Proceso();
+      var procesos = procs.generarProcesos(parseInt(numberOfProcesses));
+
+      const calendarizador = new AlgoritmoRoundRobin(procesos);
+      calendarizador.ejecutar();
+    } else {
+      alert("Por favor ingrese un numero valido");
+    }
+  </script>
+</body>
+</html>
